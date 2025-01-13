@@ -63,7 +63,7 @@ if (__SLIDEV_FEATURE_RECORD__)
       :class="barStyle"
       @mouseleave="onMouseLeave"
     >
-      <IconButton v-if="!isEmbedded" :title="isFullscreen ? 'Close fullscreen' : 'Enter fullscreen'" @click="toggleFullscreen">
+      <IconButton v-if="false && !isEmbedded" :title="isFullscreen ? 'Close fullscreen' : 'Enter fullscreen'" @click="toggleFullscreen">
         <div v-if="isFullscreen" class="i-carbon:minimize" />
         <div v-else class="i-carbon:maximize" />
       </IconButton>
@@ -87,7 +87,7 @@ if (__SLIDEV_FEATURE_RECORD__)
 
       <VerticalDivider />
 
-      <template v-if="!isEmbedded">
+      <template v-if="false && !isEmbedded">
         <template v-if="!isPresenter && !md && RecordingControls">
           <RecordingControls />
           <VerticalDivider />
@@ -115,7 +115,7 @@ if (__SLIDEV_FEATURE_RECORD__)
         <VerticalDivider />
       </template>
 
-      <template v-if="!isEmbedded">
+      <template v-if="false && !isEmbedded">
         <IconButton v-if="isPresenter" title="Play Mode" @click="exitPresenter">
           <div class="i-carbon:presentation-file" />
         </IconButton>
@@ -124,7 +124,7 @@ if (__SLIDEV_FEATURE_RECORD__)
         </IconButton>
 
         <IconButton
-          v-if="__DEV__ && __SLIDEV_FEATURE_EDITOR__"
+          v-if="false && __DEV__ && __SLIDEV_FEATURE_EDITOR__"
           :title="showEditor ? 'Hide editor' : 'Show editor'"
           class="lt-md:hidden"
           @click="showEditor = !showEditor"
@@ -133,27 +133,27 @@ if (__SLIDEV_FEATURE_RECORD__)
         </IconButton>
       </template>
 
-      <template v-if="!__DEV__">
+      <template v-if="false && !__DEV__">
         <IconButton v-if="configs.download" title="Download as PDF" @click="downloadPDF">
           <div class="i-carbon:download" />
         </IconButton>
       </template>
 
-      <template v-if="__SLIDEV_FEATURE_BROWSER_EXPORTER__ && !isEmbedded && !isPresenter">
+      <template v-if="false && __SLIDEV_FEATURE_BROWSER_EXPORTER__ && !isEmbedded && !isPresenter">
         <IconButton title="Browser Exporter" to="/export">
           <div class="i-carbon:document-pdf" />
         </IconButton>
       </template>
 
       <IconButton
-        v-if="!isPresenter && configs.info && !isEmbedded"
+        v-if="false && !isPresenter && configs.info && !isEmbedded"
         title="Show info"
         @click="showInfoDialog = !showInfoDialog"
       >
         <div class="i-carbon:information" />
       </IconButton>
 
-      <template v-if="!isEmbedded">
+      <template v-if="false && !isEmbedded">
         <VerticalDivider />
 
         <IconButton v-if="isPresenter" title="Toggle Presenter Layout" class="aspect-ratio-initial flex items-center" @click="togglePresenterLayout">
@@ -176,7 +176,7 @@ if (__SLIDEV_FEATURE_RECORD__)
         </MenuButton>
       </template>
 
-      <VerticalDivider v-if="!isEmbedded" />
+      <VerticalDivider v-if="false && !isEmbedded" />
 
       <div class="h-40px flex" p="l-1 t-0.5 r-2" text="sm leading-2">
         <div class="my-auto">
