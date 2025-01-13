@@ -25,6 +25,15 @@ export const isDark = computed<boolean>({
 
 export const toggleDark = useToggle(isDark)
 
+/**
+ * Note:
+ * custom code
+ * @param value
+ */
+export function cnxSetIsDark(value: boolean) {
+  isDark.value = value
+}
+
 if (isClient) {
   const CSS_DISABLE_TRANS = '*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}'
 

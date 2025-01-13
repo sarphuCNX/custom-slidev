@@ -82,6 +82,20 @@ export function decreasePresenterFontSize() {
 
 export const toggleOverview = useToggle(showOverview)
 
+/**
+ * Note:
+ * Custom code
+ * @param enable
+ */
+export function setOverview(enable: boolean) {
+  if (typeof enable === 'boolean') {
+    showOverview.value = enable
+  }
+  else {
+    showOverview.value = false
+  }
+}
+
 export const syncDirections = useLocalStorage(
   'slidev-sync-directions',
   {

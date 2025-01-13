@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import CustomNavControls from '#slidev/custom-nav-controls'
-import { computed, ref, shallowRef } from 'vue'
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { useDrawings } from '../composables/useDrawings'
 import { useNav } from '../composables/useNav'
 import { configs } from '../env'
-import { isColorSchemaConfigured, isDark, toggleDark } from '../logic/dark'
-import { activeElement, breakpoints, fullscreen, hasViewerCssFilter, presenterLayout, showEditor, showInfoDialog, showPresenterCursor, toggleOverview, togglePresenterLayout } from '../state'
+import { cnxSetIsDark, isColorSchemaConfigured, isDark, toggleDark } from '../logic/dark'
+import { activeElement, breakpoints, fullscreen, hasViewerCssFilter, presenterLayout, setOverview, showEditor, showInfoDialog, showPresenterCursor, toggleOverview, togglePresenterLayout } from '../state'
 import { downloadPDF } from '../utils'
 import IconButton from './IconButton.vue'
 import MenuButton from './MenuButton.vue'
@@ -13,6 +13,12 @@ import Settings from './Settings.vue'
 import SyncControls from './SyncControls.vue'
 
 import VerticalDivider from './VerticalDivider.vue'
+
+interface ISendMessageToParent {
+  event: string
+  type: string
+  data: any
+}
 
 const props = defineProps({
   persist: {
@@ -32,11 +38,105 @@ const {
   total,
   enterPresenter,
   exitPresenter,
+  go,
 } = useNav()
 const {
   brush,
   drawingEnabled,
 } = useDrawings()
+
+// Data to track previously sent values
+let previousNavData: Partial<Record<string, any>> = {}
+
+function sendMessageToWebParent(payload: ISendMessageToParent) {
+  window.parent.postMessage({ type: payload.type, data: payload.data }, '*')
+}
+
+function sendMessageToDeviceParent(payload: ISendMessageToParent) {
+  if (window.jsToNativeHandler && window.jsToNativeHandler.sendMessage) {
+    window.jsToNativeHandler.sendMessage(JSON.stringify(payload))
+  }
+}
+
+function sendMessageToParent(payload: ISendMessageToParent) {
+  sendMessageToWebParent(payload)
+  sendMessageToDeviceParent(payload)
+}
+
+// Function to check for changes and send updated data
+function sendNavData() {
+  const navData = {
+    currentSlideNo: currentSlideNo.value,
+    hasNext: hasNext.value,
+    hasPrev: hasPrev.value,
+    total: total.value,
+    isPresenter: isPresenter.value,
+  }
+
+  // Check if the new navData is different from the previous one
+  if (JSON.stringify(navData) !== JSON.stringify(previousNavData)) {
+    sendMessageToParent({ event: 'message', type: 'slidev-nav-update', data: navData })
+
+    previousNavData = { ...navData }
+  }
+}
+
+// Watch for changes in useNav properties and call sendNavData
+const stopWatchers = [
+  watch(currentSlideNo, sendNavData),
+  watch(hasNext, sendNavData),
+  watch(hasPrev, sendNavData),
+  watch(total, sendNavData),
+  watch(isPresenter, sendNavData),
+]
+
+/**
+ * Note:
+ * Custom Code
+ * @param event
+ */
+function handleMessage(event: MessageEvent) {
+  if (event.data.type === 'nav-command') {
+    if (event.data.command === 'next') {
+      next()
+    }
+    else if (event.data.command === 'prev') {
+      prev()
+    }
+    else if (event.data.command === 'goto') {
+      const value = Number.isInteger(event.data.value) ? event.data.value : 1
+      go(value)
+    }
+  }
+  else if (event.data.type === 'theme-command') {
+    if (event.data.command === 'set-dark-theme') {
+      const value = typeof event.data.value === 'boolean' ? event.data.value : true
+      cnxSetIsDark(value)
+    }
+  }
+  else if (event.data.type === 'drawing-command') {
+    if (event.data.command === 'set-drawing-enabled') {
+      const value = typeof event.data.value === 'boolean' ? event.data.value : false
+      drawingEnabled.value = value
+    }
+  }
+  else if (event.data.type === 'grid-command') {
+    if (event.data.command === 'show-grid') {
+      const value = typeof event.data.value === 'boolean' ? event.data.value : false
+      setOverview(value)
+    }
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('message', handleMessage)
+})
+
+// Clean up watchers on unmount
+onUnmounted(() => {
+  stopWatchers.forEach(stop => stop())
+  window.removeEventListener('message', handleMessage)
+})
 
 const md = breakpoints.smaller('md')
 const { isFullscreen, toggle: toggleFullscreen } = fullscreen
