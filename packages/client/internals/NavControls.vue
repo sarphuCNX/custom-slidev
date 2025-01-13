@@ -45,6 +45,14 @@ const {
   drawingEnabled,
 } = useDrawings()
 
+const isNavControlsVisible = ref(false)
+
+function setNavControlsVisibility(visible: boolean) {
+  if (typeof visible === 'boolean') {
+    isNavControlsVisible.value = visible
+  }
+}
+
 // Data to track previously sent values
 let previousNavData: Partial<Record<string, any>> = {}
 
@@ -107,6 +115,10 @@ function handleMessage(event: MessageEvent) {
       const value = Number.isInteger(event.data.value) ? event.data.value : 1
       go(value)
     }
+    else if (event.data.command === 'show-nav-controls') {
+      const value = typeof event.data.value === 'boolean' ? event.data.value : false
+      setNavControlsVisibility(value)
+    }
   }
   else if (event.data.type === 'theme-command') {
     if (event.data.command === 'set-dark-theme') {
@@ -157,7 +169,7 @@ if (__SLIDEV_FEATURE_RECORD__)
 </script>
 
 <template>
-  <nav ref="root" class="flex flex-col">
+  <nav v-if="isNavControlsVisible" ref="root" class="flex flex-col">
     <div
       class="flex flex-wrap-reverse text-xl gap-0.5 p-1 lg:p-2"
       :class="barStyle"
