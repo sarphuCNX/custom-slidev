@@ -45,7 +45,7 @@ const {
   drawingEnabled,
 } = useDrawings()
 
-const isNavControlsVisible = ref(false)
+const isNavControlsVisible = ref(true)
 
 function setNavControlsVisibility(visible: boolean) {
   if (typeof visible === 'boolean') {
@@ -121,7 +121,7 @@ function handleMessage(event: MessageEvent) {
     }
   }
   else if (event.data.type === 'theme-command') {
-    if (event.data.command === 'set-dark-theme') {
+    if (event.data.command === 'set-dark-mode') {
       const value = typeof event.data.value === 'boolean' ? event.data.value : true
       cnxSetIsDark(value)
     }
