@@ -1,5 +1,5 @@
 {
-  "name": "@slidev/cli",
+  "name": "custom-slidev-cli",
   "type": "module",
   "version": "51.0.1",
   "description": "Presentation slides for developers",
@@ -23,7 +23,7 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "slidev": "./bin/slidev.mjs"
+    "custom-slidev3": "./bin/slidev.mjs"
   },
   "files": [
     "bin",
