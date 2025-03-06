@@ -23,3 +23,10 @@ npx slidev
 ```
 npx slidev build --base "<BASE_PATH>"
 ```
+
+
+### Development
+
+- `npm link` in this repo
+- `npm run dev` during local development
+- `npm link /path/to/custom-slidev/packages/slidev` in the consuming repo
