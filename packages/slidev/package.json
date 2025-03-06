@@ -1,7 +1,7 @@
 {
-  "name": "custom-slidev-cli",
+  "name": "@cybernetyx/custom-slidev-cli",
   "type": "module",
-  "version": "51.0.1",
+  "version": "0.1.2",
   "description": "Presentation slides for developers",
   "author": "antfu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -23,7 +23,7 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "custom-slidev3": "./bin/slidev.mjs"
+    "slidev": "./bin/slidev.mjs"
   },
   "files": [
     "bin",
@@ -37,7 +37,10 @@
     "build": "rimraf dist && tsup node/index.ts node/cli.ts",
     "dev": "nr build --watch",
     "prepublishOnly": "npm run build",
-    "start": "esno node/cli.ts"
+    "start": "esno node/cli.ts",
+    "release:patch": "npm version patch && npm publish --access public",
+    "release:minor": "npm version minor && npm publish --access public",
+    "release:major": "npm version major && npm publish --access public"
   },
   "peerDependencies": {
     "playwright-chromium": "^1.10.0"
